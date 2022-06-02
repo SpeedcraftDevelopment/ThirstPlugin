@@ -11,6 +11,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
+/***
+ * The main Plugin class.
+ * @author CrimsonVideo
+ */
 public final class Thirst extends JavaPlugin {
 
     private File file;
