@@ -1,8 +1,10 @@
 package pl.net.crimsonvideo.thirst.data;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import pl.net.crimsonvideo.thirst.events.HydrationChangedEvent;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 
@@ -33,7 +35,10 @@ public class ThirstData implements Serializable {
      * @param hydration The hydration to set.
      */
     public void setPlayerHydration(@NotNull Player p, float hydration) {
-        this.hydrationMap.put(p.getUniqueId(),hydration);
+        HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(p,hydration - hydrationMap.getOrDefault(p.getUniqueId(),20f));
+        Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
+        if (!hydrationChangedEvent.isCancelled())
+            this.hydrationMap.put(p.getUniqueId(),hydration);
     }
 
     /***
@@ -55,16 +60,24 @@ public class ThirstData implements Serializable {
      * @param hydration The hydration ot increase.
      * @throws IndexOutOfBoundsException Player is not in the data file.
      * @throws ValueTooHighError Hydration is greater than 20.
+     * @throws ValueTooLowError Hydration is below 0.
      */
-    public void addHydration(@NotNull Player p, float hydration) throws IndexOutOfBoundsException, ValueTooHighError {
+    public void addHydration(@NotNull Player p, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
         if (hydration > 20)
             throw new ValueTooHighError("Hydration greater than 20");
+        else if (hydration < 0)
+            throw new ValueTooLowError("Hydration below 0");
         else
         {
-            if (this.hydrationMap.containsKey(p.getUniqueId()))
-                this.hydrationMap.compute(p.getUniqueId(),(k,v) -> Math.min(v + hydration, 20f));
-            else
-                throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
+            HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(p,hydration);
+            Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
+            if (!hydrationChangedEvent.isCancelled())
+            {
+                if (this.hydrationMap.containsKey(p.getUniqueId()))
+                    this.hydrationMap.compute(p.getUniqueId(),(k,v) -> Math.min(v + hydration, 20f));
+                else
+                    throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
+            }
         }
     }
 
@@ -73,16 +86,22 @@ public class ThirstData implements Serializable {
      * @param p The player whose hydration will be subtracted.
      * @param hydration The hydration to subtract.
      * @throws IndexOutOfBoundsException Player is not in the data file.
-     * @throws ValueTooLowError Hydration is greater than 20.
+     * @throws ValueTooHighError Hydration is greater than 20.
+     * @throws ValueTooLowError Hydration is lower than 0.
      */
-    public void subtractHydration(@NotNull Player p, float hydration) throws IndexOutOfBoundsException, ValueTooLowError {
+    public void subtractHydration(@NotNull Player p, float hydration) throws IndexOutOfBoundsException, ValueTooLowError, ValueTooHighError {
         if (hydration > 20)
-            throw new ValueTooLowError("Hydration above 20");
+            throw new ValueTooHighError("Hydration above 20");
+        else if (hydration < 0)
+            throw new ValueTooLowError("Hydration below 0");
         else {
-            if (this.hydrationMap.containsKey(p.getUniqueId()))
-                this.hydrationMap.compute(p.getUniqueId(),(k,v) -> v -= hydration);
-            else
-                throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
+            HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(p,-hydration);
+            Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
+            if (!hydrationChangedEvent.isCancelled())
+                if (this.hydrationMap.containsKey(p.getUniqueId()))
+                    this.hydrationMap.compute(p.getUniqueId(),(k,v) -> Math.max(0f,v-hydration));
+                else
+                    throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
         }
     }
 }
