@@ -10,12 +10,37 @@ public class HydrationChangedEvent extends Event implements Cancellable {
     private static final HandlerList handlerList = new HandlerList();
     protected boolean isCancelled = false;
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public float getChange() {
+        return change;
+    }
+
+    public void setChange(float change) {
+        this.change = change;
+    }
+
     private final Player player;
     private float change;
+
+    public boolean isSet() {
+        return isSet;
+    }
+
+    private final boolean isSet;
 
     public HydrationChangedEvent(Player player, float change) {
         this.player = player;
         this.change = change;
+        this.isSet = false;
+    }
+
+    public HydrationChangedEvent(Player player, float change, boolean isSet) {
+        this.player = player;
+        this.change = change;
+        this.isSet = isSet;
     }
 
     @NotNull

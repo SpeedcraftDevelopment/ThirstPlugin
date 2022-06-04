@@ -35,10 +35,10 @@ public class ThirstData implements Serializable {
      * @param hydration The hydration to set.
      */
     public void setPlayerHydration(@NotNull Player p, float hydration) {
-        HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(p,hydration - hydrationMap.getOrDefault(p.getUniqueId(),20f));
+        HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(p,hydration,true);
         Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
         if (!hydrationChangedEvent.isCancelled())
-            this.hydrationMap.put(p.getUniqueId(),hydration);
+            this.hydrationMap.put(p.getUniqueId(),hydrationChangedEvent.getChange());
     }
 
     /***
@@ -74,7 +74,7 @@ public class ThirstData implements Serializable {
             if (!hydrationChangedEvent.isCancelled())
             {
                 if (this.hydrationMap.containsKey(p.getUniqueId()))
-                    this.hydrationMap.compute(p.getUniqueId(),(k,v) -> Math.min(v + hydration, 20f));
+                    this.hydrationMap.compute(p.getUniqueId(),(k,v) -> Math.min(v + hydrationChangedEvent.getChange(), 20f));
                 else
                     throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
             }
@@ -99,7 +99,7 @@ public class ThirstData implements Serializable {
             Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
             if (!hydrationChangedEvent.isCancelled())
                 if (this.hydrationMap.containsKey(p.getUniqueId()))
-                    this.hydrationMap.compute(p.getUniqueId(),(k,v) -> Math.max(0f,v-hydration));
+                    this.hydrationMap.compute(p.getUniqueId(),(k,v) -> Math.max(0f,v+hydrationChangedEvent.getChange()));
                 else
                     throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
         }
