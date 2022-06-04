@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.stream.IntStream;
 
 public class ValueTooHighError extends Error {
+    private static final long serialVersionUID = -4801576966237163502L;
     private final String message;
     public ValueTooHighError(String message) {
         this.message = message;
