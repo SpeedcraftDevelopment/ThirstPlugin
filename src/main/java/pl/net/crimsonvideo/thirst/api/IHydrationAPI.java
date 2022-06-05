@@ -10,10 +10,14 @@ import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 import java.lang.reflect.Field;
 
 public interface IHydrationAPI {
-    static Thirst getPlugin() throws NoSuchFieldException, IllegalAccessException {
-        Field plugin = ThirstAPI.class.getDeclaredField("plugin");
-        plugin.setAccessible(true);
-        return (Thirst)plugin.get(Thirst.getAPI());
+    static Thirst getPlugin() {
+        try {
+            Field plugin = ThirstAPI.class.getDeclaredField("plugin");
+            plugin.setAccessible(true);
+            return (Thirst)plugin.get(Thirst.getAPI());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
     /***
      * Gets hydration from player.

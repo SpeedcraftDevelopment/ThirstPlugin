@@ -5,9 +5,13 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import pl.net.crimsonvideo.thirst.api.IHydrationAPI;
 import pl.net.crimsonvideo.thirst.data.ThirstData;
+import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
+import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +29,7 @@ public final class Thirst extends JavaPlugin {
     private File file;
     private File thirstDataFile;
     private FileConfiguration config;
-    private ThirstData thirstData;
+    ThirstData thirstData;
     private static ThirstAPI api;
 
     @Override
@@ -134,5 +138,32 @@ public final class Thirst extends JavaPlugin {
             saveDefaultConfig();
         }
         scanConfig();
+    }
+
+    static class HydrationAPI implements IHydrationAPI {
+
+        @Override
+        public float getHydration(Player player) throws IndexOutOfBoundsException {
+            return this.getThirstData().getPlayerHydration(player);
+        }
+
+        @Override
+        public void setHydration(Player player, float hydration) {
+            this.getThirstData().setPlayerHydration(player, hydration);
+        }
+
+        @Override
+        public void addHydration(Player player, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
+            this.getThirstData().addHydration(player, hydration);
+        }
+
+        @Override
+        public void subtractHydration(Player player, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
+            this.getThirstData().subtractHydration(player, hydration);
+        }
+
+        private ThirstData getThirstData() {
+            return IHydrationAPI.getPlugin().thirstData;
+        }
     }
 }

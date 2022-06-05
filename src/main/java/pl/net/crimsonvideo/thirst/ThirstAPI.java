@@ -7,5 +7,6 @@ public final class ThirstAPI {
     public IHydrationAPI hydrationAPI;
     ThirstAPI(Thirst plugin) {
         ThirstAPI.plugin = plugin;
+        this.hydrationAPI = new Thirst.HydrationAPI();
     }
 }
