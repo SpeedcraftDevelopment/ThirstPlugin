@@ -3,20 +3,27 @@ package pl.net.crimsonvideo.thirst.data;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pl.net.crimsonvideo.thirst.events.HydrationChangedEvent;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 
-import java.io.Serializable;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class ThirstData implements Serializable {
     private transient static final long serialVersionUID = 7410964373687906258L;
 
-    private final transient JavaPlugin plugin;
+    private transient JavaPlugin plugin;
 
     private Map<UUID,Float> hydrationMap;
 
@@ -103,5 +110,25 @@ public class ThirstData implements Serializable {
                 else
                     throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
         }
+    }
+
+    public boolean saveData(String filePath) {
+        try {
+            BukkitObjectOutputStream out = new BukkitObjectOutputStream(new GZIPOutputStream(Files.newOutputStream(Paths.get(filePath))));
+            out.writeObject(this);
+            out.close();
+            return true;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static @Nullable ThirstData loadData(String filePath) throws IOException, ClassNotFoundException {
+            BukkitObjectInputStream in = new BukkitObjectInputStream(new GZIPInputStream(Files.newInputStream(Paths.get(filePath))));
+            ThirstData data = (ThirstData) in.readObject();
+            in.close();
+            return data;
     }
 }

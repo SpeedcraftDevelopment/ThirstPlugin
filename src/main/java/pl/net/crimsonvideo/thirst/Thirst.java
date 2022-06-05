@@ -1,24 +1,51 @@
 package pl.net.crimsonvideo.thirst;
 
+import org.apiguardian.api.API;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import pl.net.crimsonvideo.thirst.data.ThirstData;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Scanner;
 
 /***
  * The main Plugin class.
  * @author CrimsonVideo
  */
+@API(status = API.Status.INTERNAL,since="0.1-SNAPSHOT")
 public final class Thirst extends JavaPlugin {
 
     private File file;
+    private File thirstDataFile;
     private FileConfiguration config;
+    private ThirstData thirstData;
+
+    @Override
+    public void onLoad(){
+        this.thirstDataFile = new File(getDataFolder() + "hydration.dat");
+        try {
+            this.thirstData = ThirstData.loadData(thirstDataFile.getPath());
+            Field plugin = ThirstData.class.getDeclaredField("plugin");
+            plugin.setAccessible(true);
+            plugin.set(this.thirstData,this);
+        } catch (IOException e) {
+            if (!thirstDataFile.exists())
+            {
+                this.thirstData = new ThirstData(this);
+                if (!this.thirstData.saveData(thirstDataFile.getPath()))
+                    throw new RuntimeException("Can't create data file.");
+            }
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void onEnable() {
@@ -31,11 +58,11 @@ public final class Thirst extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        this.thirstData.saveData(this.thirstDataFile.getPath());
     }
 
     @Override
-    public FileConfiguration getConfig() {
+    public @NotNull FileConfiguration getConfig() {
         return config;
     }
 
@@ -53,9 +80,7 @@ public final class Thirst extends JavaPlugin {
 
     private void scanConfig() {
         // declare our scanner variable
-        Scanner scan = null;
-        try {
-            scan = new Scanner(file);
+        try (Scanner scan = new Scanner(file)) {
 
             int row = 0;
             String line = "";
@@ -67,7 +92,7 @@ public final class Thirst extends JavaPlugin {
                 row++;
 
                 // If a tab is found ... \t = tab in regex
-                if (line.indexOf("\t") != -1) {
+                if (line.contains("\t")) {
                     /*
                      * Tell the user where the tab is! We throw an
                      * IllegalArgumentException here.
@@ -81,25 +106,17 @@ public final class Thirst extends JavaPlugin {
              * because of IllegalArgumentException
              */
             config.load(file);
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             // this error should never happen if the file exists
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             // failed loading error
             e.printStackTrace();
-        }
-        catch (InvalidConfigurationException e) {
+        } catch (InvalidConfigurationException e) {
             // snakeyaml error if the config setup is incorrect.
             e.printStackTrace();
         }
-        finally {
-            // Close the scanner to avoid memory leaks.
-            if (scan != null) {
-                scan.close();
-            }
-        }
+        // Close the scanner to avoid memory leaks.
     }
 
     @Override
