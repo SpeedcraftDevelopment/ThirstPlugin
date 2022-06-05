@@ -26,6 +26,7 @@ public final class Thirst extends JavaPlugin {
     private File thirstDataFile;
     private FileConfiguration config;
     private ThirstData thirstData;
+    private static ThirstAPI api;
 
     @Override
     public void onLoad(){
@@ -45,6 +46,12 @@ public final class Thirst extends JavaPlugin {
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+        api = new ThirstAPI(this);
+    }
+
+    @API(status= API.Status.STABLE,since="0.1-SNAPSHOT")
+    public static ThirstAPI getAPI(){
+        return api;
     }
 
     @Override

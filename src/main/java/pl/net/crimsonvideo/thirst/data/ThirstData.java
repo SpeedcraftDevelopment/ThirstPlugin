@@ -7,6 +7,7 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pl.net.crimsonvideo.thirst.api.IHydrationAPI;
 import pl.net.crimsonvideo.thirst.events.HydrationChangedEvent;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
@@ -40,6 +41,7 @@ public class ThirstData implements Serializable {
      * Sets hydration for player.
      * @param p The player whose hydration will be set.
      * @param hydration The hydration to set.
+     * @see IHydrationAPI#setHydration(Player, float)
      */
     public void setPlayerHydration(@NotNull Player p, float hydration) {
         HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(p,hydration,true);
@@ -53,6 +55,7 @@ public class ThirstData implements Serializable {
      * @param p The player whose hydration will be read.
      * @return The player's hydration.
      * @throws IndexOutOfBoundsException The given Player is not in the database.
+     * @see IHydrationAPI#getHydration(Player)
      */
     public float getPlayerHydration(@NotNull Player p) throws IndexOutOfBoundsException {
         if (this.hydrationMap.containsKey(p.getUniqueId()))
@@ -68,6 +71,7 @@ public class ThirstData implements Serializable {
      * @throws IndexOutOfBoundsException Player is not in the data file.
      * @throws ValueTooHighError Hydration is greater than 20.
      * @throws ValueTooLowError Hydration is below 0.
+     * @see IHydrationAPI#addHydration(Player, float) 
      */
     public void addHydration(@NotNull Player p, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
         if (hydration > 20)
@@ -95,6 +99,7 @@ public class ThirstData implements Serializable {
      * @throws IndexOutOfBoundsException Player is not in the data file.
      * @throws ValueTooHighError Hydration is greater than 20.
      * @throws ValueTooLowError Hydration is lower than 0.
+     * @see IHydrationAPI#subtractHydration(Player, float) 
      */
     public void subtractHydration(@NotNull Player p, float hydration) throws IndexOutOfBoundsException, ValueTooLowError, ValueTooHighError {
         if (hydration > 20)
