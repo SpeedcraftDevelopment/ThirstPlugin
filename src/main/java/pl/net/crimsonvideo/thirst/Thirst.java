@@ -12,6 +12,7 @@ import pl.net.crimsonvideo.thirst.api.IHydrationAPI;
 import pl.net.crimsonvideo.thirst.data.ThirstData;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
+import pl.net.crimsonvideo.thirst.listeners.PlayerMoveListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -65,6 +66,7 @@ public final class Thirst extends JavaPlugin {
         config = new YamlConfiguration();
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(),this);
     }
 
     @Override
