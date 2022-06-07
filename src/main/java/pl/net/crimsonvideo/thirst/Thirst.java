@@ -7,6 +7,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import pl.net.crimsonvideo.thirst.api.IHydrationAPI;
 import pl.net.crimsonvideo.thirst.data.ThirstData;
@@ -63,6 +65,8 @@ public final class Thirst extends JavaPlugin {
         // Plugin startup logic
         file = new File(getDataFolder(), "config.yml");
         config = new YamlConfiguration();
+        if (!file.exists())
+            this.saveDefaultConfig();
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
     }
@@ -75,6 +79,14 @@ public final class Thirst extends JavaPlugin {
     @Override
     public @NotNull FileConfiguration getConfig() {
         return config;
+    }
+
+    @Override
+    public void saveDefaultConfig() {
+        this.config.set("seed",this.getServer().hashCode());
+        for (PotionType type : PotionType.values())
+            this.config.set(String.format("thirst.%s",type.name()),1f);
+        this.saveConfig();
     }
 
     @Override
