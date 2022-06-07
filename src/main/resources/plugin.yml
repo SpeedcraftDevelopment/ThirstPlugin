@@ -8,3 +8,7 @@ authors: [ CrimsonVideo ]
 description: Adds Thirst to Minecraft Servers.
 libraries:
   - "org.apiguardian:apiguardian-api:1.1.2"
+permissions:
+  thirst.hydration:
+    description: Whenever hydration affects the player or not.
+    default: not op
