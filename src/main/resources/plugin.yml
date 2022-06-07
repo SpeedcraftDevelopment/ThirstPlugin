@@ -1,4 +1,4 @@
-name: ThirstAndTemperature
+name: Thirst
 version: '${version}'
 main: pl.net.crimsonvideo.thirst.Thirst
 api-version: 1.14
