@@ -37,5 +37,7 @@ public class DrinkListener implements Listener {
                 float loss = (random.nextInt(250-15)+15)/100f;
                 Thirst.getAPI().hydrationAPI.subtractHydration(event.getPlayer(), (float)(temp<0.15f?loss*temp:loss*(1f+temp)));
             }
+        if (event.getPlayer().hasPermission("thirst.hydration") && Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer())==0)
+            event.getPlayer().damage(1);
     }
 }
