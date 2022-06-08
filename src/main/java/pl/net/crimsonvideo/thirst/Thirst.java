@@ -14,7 +14,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +47,16 @@ public final class Thirst extends JavaPlugin implements Listener {
     private static ThirstAPI api;
 
     private Map<UUID, BossBar> uuidBossBarMap;
+
+    public Thirst()
+    {
+        super();
+    }
+
+    protected Thirst(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file)
+    {
+        super(loader, description, dataFolder, file);
+    }
 
     @Override
     public void onLoad(){
