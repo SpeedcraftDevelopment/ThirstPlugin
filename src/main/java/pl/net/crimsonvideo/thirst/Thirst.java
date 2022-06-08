@@ -17,8 +17,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import pl.net.crimsonvideo.thirst.api.IHydrationAPI;
 import pl.net.crimsonvideo.thirst.data.ThirstData;
@@ -90,6 +90,13 @@ public final class Thirst extends JavaPlugin implements Listener {
         file = new File(getDataFolder(), "config.yml");
         config = new YamlConfiguration();
         reloadConfig();
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                thirstData.saveData(thirstDataFile.getPath());
+            }
+        }.runTaskTimerAsynchronously(this,1,getConfig().getLong("autosavetime",60L)*1200L);
         this.uuidBossBarMap = Collections.synchronizedMap(new HashMap<UUID,BossBar>());
         getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
         int pluginId = 15371;
@@ -109,6 +116,7 @@ public final class Thirst extends JavaPlugin implements Listener {
     @Override
     public void saveDefaultConfig() {
         this.config.set("seed",this.getServer().hashCode());
+        this.config.set("autosavetime",60L);
         for (PotionType type : PotionType.values())
             this.config.set(String.format("thirst.%s",type.name()),1f);
         this.saveConfig();
@@ -205,6 +213,13 @@ public final class Thirst extends JavaPlugin implements Listener {
             final BossBar bar = this.uuidBossBarMap.get(player.getUniqueId());
             bar.addPlayer(player);
             bar.setProgress(this.thirstData.getPlayerHydration(player)/20f);
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    bar.removeAll();
+                }
+            }.runTaskLater(this,100);
         }
     }
 
