@@ -2,16 +2,25 @@ package pl.net.crimsonvideo.thirst;
 
 import org.apiguardian.api.API;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import pl.net.crimsonvideo.thirst.api.IHydrationAPI;
 import pl.net.crimsonvideo.thirst.data.ThirstData;
+import pl.net.crimsonvideo.thirst.events.HydrationChangedEvent;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 
@@ -19,20 +28,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Scanner;
+import java.util.*;
 
 /***
  * The main Plugin class.
  * @author CrimsonVideo
  */
 @API(status = API.Status.INTERNAL,since="0.1-SNAPSHOT")
-public final class Thirst extends JavaPlugin {
+public final class Thirst extends JavaPlugin implements Listener {
 
     private File file;
     private File thirstDataFile;
     private FileConfiguration config;
     ThirstData thirstData;
     private static ThirstAPI api;
+
+    private Map<UUID, BossBar> uuidBossBarMap;
 
     @Override
     public void onLoad(){
@@ -65,8 +76,8 @@ public final class Thirst extends JavaPlugin {
         // Plugin startup logic
         file = new File(getDataFolder(), "config.yml");
         config = new YamlConfiguration();
-        if (!file.exists())
-            this.saveDefaultConfig();
+        reloadConfig();
+        this.uuidBossBarMap = Collections.synchronizedMap(new HashMap<UUID,BossBar>());
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
     }
@@ -150,6 +161,37 @@ public final class Thirst extends JavaPlugin {
             saveDefaultConfig();
         }
         scanConfig();
+    }
+
+    @EventHandler
+    public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
+        float hydration;
+        final Player player = event.getPlayer();
+        try {
+            hydration = Thirst.getAPI().hydrationAPI.getHydration(player);
+        } catch (IndexOutOfBoundsException e) {
+            Thirst.getAPI().hydrationAPI.setHydration(player, 20f);
+            hydration = 20f;
+        }
+        BossBar bar = Bukkit.createBossBar("Thirst", BarColor.BLUE, BarStyle.SEGMENTED_20);
+        bar.setProgress(hydration/20f);
+        this.uuidBossBarMap.put(player.getUniqueId(),bar);
+    }
+
+    @EventHandler
+    public void onPlayerLeave(@NotNull PlayerQuitEvent event){
+        this.uuidBossBarMap.remove(event.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onHydrationChanged(@NotNull HydrationChangedEvent event){
+        final Player player = event.getPlayer();
+        if (this.uuidBossBarMap.containsKey(player.getUniqueId()))
+        {
+            final BossBar bar = this.uuidBossBarMap.get(player.getUniqueId());
+            bar.addPlayer(player);
+            bar.setProgress(this.thirstData.getPlayerHydration(player)/20f);
+        }
     }
 
     static class HydrationAPI implements IHydrationAPI {
