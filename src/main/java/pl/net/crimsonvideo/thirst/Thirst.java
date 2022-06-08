@@ -23,6 +23,7 @@ import pl.net.crimsonvideo.thirst.data.ThirstData;
 import pl.net.crimsonvideo.thirst.events.HydrationChangedEvent;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
+import pl.net.crimsonvideo.thirst.listeners.DrinkListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -78,6 +79,7 @@ public final class Thirst extends JavaPlugin implements Listener {
         config = new YamlConfiguration();
         reloadConfig();
         this.uuidBossBarMap = Collections.synchronizedMap(new HashMap<UUID,BossBar>());
+        getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
     }
