@@ -38,7 +38,7 @@ import java.util.*;
  * @author CrimsonVideo
  */
 @API(status = API.Status.INTERNAL,since="0.1-SNAPSHOT")
-public final class Thirst extends JavaPlugin implements Listener {
+public class Thirst extends JavaPlugin implements Listener {
 
     private File file;
     private File thirstDataFile;
