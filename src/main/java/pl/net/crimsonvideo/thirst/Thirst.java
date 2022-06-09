@@ -12,7 +12,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,8 +44,6 @@ public final class Thirst extends JavaPlugin implements Listener {
     private FileConfiguration config;
     ThirstData thirstData;
     private static ThirstAPI api;
-
-    private Map<UUID, BossBar> uuidBossBarMap;
 
     public Thirst()
     {
@@ -97,7 +94,6 @@ public final class Thirst extends JavaPlugin implements Listener {
                 thirstData.saveData(thirstDataFile.getPath());
             }
         }.runTaskTimerAsynchronously(this,1,getConfig().getLong("autosavetime",60L)*1200L);
-        this.uuidBossBarMap = Collections.synchronizedMap(new HashMap<UUID,BossBar>());
         getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
@@ -186,41 +182,21 @@ public final class Thirst extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
-        float hydration;
-        final Player player = event.getPlayer();
-        try {
-            hydration = Thirst.getAPI().hydrationAPI.getHydration(player);
-        } catch (IndexOutOfBoundsException e) {
-            Thirst.getAPI().hydrationAPI.setHydration(player, 20f);
-            hydration = 20f;
-        }
-        BossBar bar = Bukkit.createBossBar("Thirst", BarColor.BLUE, BarStyle.SEGMENTED_20);
-        bar.setProgress(hydration/20f);
-        this.uuidBossBarMap.put(player.getUniqueId(),bar);
-    }
-
-    @EventHandler
-    public void onPlayerLeave(@NotNull PlayerQuitEvent event){
-        this.uuidBossBarMap.remove(event.getPlayer().getUniqueId());
-    }
-
-    @EventHandler
     public void onHydrationChanged(@NotNull HydrationChangedEvent event){
+        if (event.isCancelled())
+            return;
+        this.getLogger().info(String.format("%s's hydration changed by %.5f", event.getPlayer().getName(),event.getChange()));
         final Player player = event.getPlayer();
-        if (this.uuidBossBarMap.containsKey(player.getUniqueId()))
-        {
-            final BossBar bar = this.uuidBossBarMap.get(player.getUniqueId());
-            bar.addPlayer(player);
-            bar.setProgress(this.thirstData.getPlayerHydration(player)/20f);
-            new BukkitRunnable() {
+        final BossBar bar = Bukkit.createBossBar("Thirst",BarColor.BLUE,BarStyle.SEGMENTED_20);
+        bar.setProgress(this.thirstData.getPlayerHydration(event.getPlayer())/20f);
+        bar.addPlayer(event.getPlayer());
+        new BukkitRunnable(){
 
-                @Override
-                public void run() {
-                    bar.removeAll();
-                }
-            }.runTaskLater(this,100);
-        }
+            @Override
+            public void run() {
+                bar.removeAll();
+            }
+        }.runTaskLater(this,100);
     }
 
     static class HydrationAPI implements IHydrationAPI {
