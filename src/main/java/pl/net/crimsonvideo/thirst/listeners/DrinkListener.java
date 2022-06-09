@@ -33,18 +33,12 @@ public class DrinkListener implements Listener {
     @EventHandler
     public void onPlayerMove(@NotNull PlayerMoveEvent event) {
         final double temp = event.getTo().getBlock().getTemperature();
+        if (random.nextInt(32767)*temp>30000)
+            if (random.nextBoolean() ){
+                float loss = (random.nextInt(250-15)+15)/100f;
+                Thirst.getAPI().hydrationAPI.subtractHydration(event.getPlayer(), (float)(temp<0.15f?loss*temp:loss*(1f+temp)));
+            }
         if (event.getPlayer().hasPermission("thirst.hydration") && Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer())==0)
             event.getPlayer().damage(1);
-        new BukkitRunnable(){
-
-            @Override
-            public void run() {
-                if (random.nextInt(32767)*temp>30000)
-                    if (random.nextBoolean() ){
-                        float loss = (random.nextInt(250-15)+15)/100f;
-                        Thirst.getAPI().hydrationAPI.subtractHydration(event.getPlayer(), (float)(temp<0.15f?loss*temp:loss*(1f+temp)));
-                    }
-            }
-        }.runTaskAsynchronously(plugin);
     }
 }
