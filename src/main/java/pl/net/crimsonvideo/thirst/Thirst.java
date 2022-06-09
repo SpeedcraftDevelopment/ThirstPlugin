@@ -1,7 +1,7 @@
 package pl.net.crimsonvideo.thirst;
 
 import org.apiguardian.api.API;
-import org.bstats.bukkit.Metrics;
+import relocate.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
