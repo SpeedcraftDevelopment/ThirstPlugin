@@ -226,8 +226,13 @@ public final class Thirst extends JavaPlugin implements Listener {
     static class HydrationAPI implements IHydrationAPI {
 
         @Override
-        public float getHydration(Player player) throws IndexOutOfBoundsException {
-            return this.getThirstData().getPlayerHydration(player);
+        public float getHydration(Player player) {
+            try {
+                return this.getThirstData().getPlayerHydration(player);
+            } catch (IndexOutOfBoundsException e){
+                this.getThirstData().setPlayerHydration(player,20f);
+                return 20f;
+            }
         }
 
         @Override
@@ -236,13 +241,21 @@ public final class Thirst extends JavaPlugin implements Listener {
         }
 
         @Override
-        public void addHydration(Player player, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
-            this.getThirstData().addHydration(player, hydration);
+        public void addHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError {
+            try {
+                this.getThirstData().addHydration(player, hydration);
+            } catch (IndexOutOfBoundsException e){
+                this.getThirstData().setPlayerHydration(player,20f);
+            }
         }
 
         @Override
-        public void subtractHydration(Player player, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
-            this.getThirstData().subtractHydration(player, hydration);
+        public void subtractHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError {
+            try {
+                this.getThirstData().subtractHydration(player, hydration);
+            } catch (IndexOutOfBoundsException e) {
+                this.getThirstData().setPlayerHydration(player,20f-hydration);
+            }
         }
 
         private ThirstData getThirstData() {

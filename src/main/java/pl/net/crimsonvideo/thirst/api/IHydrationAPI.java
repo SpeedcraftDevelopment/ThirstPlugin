@@ -23,10 +23,9 @@ public interface IHydrationAPI {
      * Gets hydration from player.
      * @param player The player whose hydration will be read.
      * @return The player's hydration.
-     * @throws IndexOutOfBoundsException Player has no hydration assigned.
      * @see ThirstData#getPlayerHydration(Player)
      */
-    float getHydration(Player player) throws IndexOutOfBoundsException;
+    float getHydration(Player player);
     /***
      * Sets hydration for player.
      * @param player The player whose hydration will be set.
@@ -38,20 +37,18 @@ public interface IHydrationAPI {
      * Increases hydration of player.
      * @param player The player whose hydration will be increased.
      * @param hydration The hydration ot increase.
-     * @throws IndexOutOfBoundsException Player has no hydration assigned.
      * @throws ValueTooHighError Hydration is greater than 20.
      * @throws ValueTooLowError Hydration is below 0.
      * @see ThirstData#addHydration(Player, float)
      */
-    void addHydration(Player player, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError;
+    void addHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError;
     /***
      * Subtracts hydration from player.
      * @param player The player whose hydration will be subtracted.
      * @param hydration The hydration to subtract.
-     * @throws IndexOutOfBoundsException Player has no hydration assigned.
      * @throws ValueTooHighError Hydration is greater than 20.
      * @throws ValueTooLowError Hydration is lower than 0.
      * @see ThirstData#subtractHydration(Player, float)
      */
-    void subtractHydration(Player player, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError;
+    void subtractHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError;
 }
