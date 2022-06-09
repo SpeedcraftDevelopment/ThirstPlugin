@@ -95,6 +95,7 @@ public final class Thirst extends JavaPlugin implements Listener {
             }
         }.runTaskTimerAsynchronously(this,1,getConfig().getLong("autosavetime",60L)*1200L);
         getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
+        Bukkit.getPluginManager().registerEvents(this, this);
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
     }
