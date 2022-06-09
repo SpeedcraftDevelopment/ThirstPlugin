@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import pl.net.crimsonvideo.thirst.Thirst;
 
@@ -31,13 +32,19 @@ public class DrinkListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(@NotNull PlayerMoveEvent event) {
-        double temp = event.getTo().getBlock().getTemperature();
-        if (random.nextInt(32767)*temp>30000)
-            if (random.nextBoolean() ){
-                float loss = (random.nextInt(250-15)+15)/100f;
-                Thirst.getAPI().hydrationAPI.subtractHydration(event.getPlayer(), (float)(temp<0.15f?loss*temp:loss*(1f+temp)));
-            }
+        final double temp = event.getTo().getBlock().getTemperature();
         if (event.getPlayer().hasPermission("thirst.hydration") && Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer())==0)
             event.getPlayer().damage(1);
+        new BukkitRunnable(){
+
+            @Override
+            public void run() {
+                if (random.nextInt(32767)*temp>30000)
+                    if (random.nextBoolean() ){
+                        float loss = (random.nextInt(250-15)+15)/100f;
+                        Thirst.getAPI().hydrationAPI.subtractHydration(event.getPlayer(), (float)(temp<0.15f?loss*temp:loss*(1f+temp)));
+                    }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 }
