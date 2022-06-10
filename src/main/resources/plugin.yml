@@ -12,3 +12,23 @@ permissions:
   thirst.hydration:
     description: Whenever hydration affects the player or not.
     default: not op
+  thirst.admin.set:
+    default: op
+    description: Allows you to set player's hydration.
+  thirst.admin.add:
+    default: op
+    description: Allows you to add hydration to players.
+  thirst.admin.subtract:
+    default: op
+    description: Allows you to subtract hydration from players.
+  thirst.admin.get:
+    default: op
+    description: Allows you to see hydration of another player.
+  thirst.admin:
+    description: All thirst admin permissions.
+    default: op
+    children:
+      thirst.admin.set: true
+      thirst.admin.get: true
+      thirst.admin.add: true
+      thirst.admin.subtract: true

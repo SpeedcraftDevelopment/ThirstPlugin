@@ -57,7 +57,7 @@ public final class Thirst extends JavaPlugin implements Listener {
 
     @Override
     public void onLoad(){
-        this.thirstDataFile = new File(getDataFolder() + "hydration.dat");
+        this.thirstDataFile = new File(getDataFolder() + "/hydration.dat");
         try {
             this.thirstData = ThirstData.loadData(thirstDataFile.getPath());
             Field plugin = ThirstData.class.getDeclaredField("plugin");
@@ -187,17 +187,7 @@ public final class Thirst extends JavaPlugin implements Listener {
         if (event.isCancelled())
             return;
         this.getLogger().info(String.format("%s's hydration changed by %.5f", event.getPlayer().getName(),event.getChange()));
-        final Player player = event.getPlayer();
-        final BossBar bar = Bukkit.createBossBar("Thirst",BarColor.BLUE,BarStyle.SEGMENTED_20);
-        bar.setProgress(this.thirstData.getPlayerHydration(event.getPlayer())/20f);
-        bar.addPlayer(event.getPlayer());
-        new BukkitRunnable(){
 
-            @Override
-            public void run() {
-                bar.removeAll();
-            }
-        }.runTaskLater(this,100);
     }
 
     static class HydrationAPI implements IHydrationAPI {
