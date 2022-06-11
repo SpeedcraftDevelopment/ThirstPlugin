@@ -39,9 +39,39 @@ public class HydrationCommandExecutor implements CommandExecutor {
                     plugin.getLogger().warning("Permission \"thirst.admin.get\" not present.");
                     if (sender instanceof Player)
                         sender.sendMessage(ChatColor.RED + "You do not have the permission to do that.");
+                    return false;
                 }
             }else if ("set".equalsIgnoreCase(args[0])) {
-                Thirst.getAPI().hydrationAPI.setHydration(plugin.getServer().getPlayer(args[1]), Float.parseFloat(args[2]));
+                if (!sender.hasPermission("thirst.admin.set"))
+                {
+                    plugin.getLogger().warning("Permission \"thirst.admin.set\" not present.");
+                    if (sender instanceof Player)
+                        sender.sendMessage(ChatColor.RED + "You do not have the permission to do that.");
+                    return false;
+                } else {
+                    Thirst.getAPI().hydrationAPI.setHydration(plugin.getServer().getPlayer(args[1]), Float.parseFloat(args[2]));
+                    return true;
+                }
+            } else if ("add".equalsIgnoreCase(args[0])) {
+                if (!sender.hasPermission("thirst.admin.add")) {
+                    plugin.getLogger().warning("Permission \"thirst.admin.add\" not present.");
+                    if (sender instanceof Player)
+                        sender.sendMessage(ChatColor.RED + "You do not have the permission to do that.");
+                    return false;
+                } else {
+                    Thirst.getAPI().hydrationAPI.addHydration(plugin.getServer().getPlayer(args[1]), Float.parseFloat(args[2]));
+                    return true;
+                }
+            } else if ("subtract".equalsIgnoreCase(args[0])) {
+                if (!sender.hasPermission("thirst.admin.subtract")) {
+                    plugin.getLogger().warning("Permission \"thirst.admin.subtract\" not present.");
+                    if (sender instanceof Player)
+                        sender.sendMessage(ChatColor.RED + "You do not have the permission to do that.");
+                    return false;
+                } else {
+                    Thirst.getAPI().hydrationAPI.subtractHydration(plugin.getServer().getPlayer(args[1]), Float.parseFloat(args[2]));
+                    return true;
+                }
             } else {
                 if (sender instanceof Player) {
                     final Player player = (Player) sender;
