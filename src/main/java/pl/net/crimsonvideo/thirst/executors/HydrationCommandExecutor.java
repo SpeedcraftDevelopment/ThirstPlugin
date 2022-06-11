@@ -14,6 +14,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import pl.net.crimsonvideo.thirst.Thirst;
+import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
+import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
+
+import java.util.logging.Level;
 
 public class HydrationCommandExecutor implements CommandExecutor {
     private JavaPlugin plugin;
@@ -59,7 +63,19 @@ public class HydrationCommandExecutor implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + "You do not have the permission to do that.");
                     return false;
                 } else {
-                    Thirst.getAPI().hydrationAPI.addHydration(plugin.getServer().getPlayer(args[1]), Float.parseFloat(args[2]));
+                    try {
+                        Thirst.getAPI().hydrationAPI.addHydration(plugin.getServer().getPlayer(args[1]), Float.parseFloat(args[2]));
+                    } catch (ValueTooHighError error) {
+                        error.printStackTrace();
+                        if (sender instanceof Player)
+                            sender.sendMessage(ChatColor.RED + "Value too high.");
+                        return false;
+                    } catch (ValueTooLowError error) {
+                        error.printStackTrace();
+                        if (sender instanceof Player)
+                            sender.sendMessage(ChatColor.RED + "Value too low.");
+                        return false;
+                    }
                     return true;
                 }
             } else if ("subtract".equalsIgnoreCase(args[0])) {
@@ -69,7 +85,19 @@ public class HydrationCommandExecutor implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + "You do not have the permission to do that.");
                     return false;
                 } else {
-                    Thirst.getAPI().hydrationAPI.subtractHydration(plugin.getServer().getPlayer(args[1]), Float.parseFloat(args[2]));
+                    try {
+                        Thirst.getAPI().hydrationAPI.subtractHydration(plugin.getServer().getPlayer(args[1]), Float.parseFloat(args[2]));
+                    } catch (ValueTooHighError error) {
+                        error.printStackTrace();
+                        if (sender instanceof Player)
+                            sender.sendMessage(ChatColor.RED + "Value too high.");
+                        return false;
+                    } catch (ValueTooLowError error) {
+                        error.printStackTrace();
+                        if (sender instanceof Player)
+                            sender.sendMessage(ChatColor.RED + "Value too low.");
+                        return false;
+                    }
                     return true;
                 }
             } else {
