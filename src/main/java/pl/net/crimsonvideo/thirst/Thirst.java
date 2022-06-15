@@ -1,6 +1,7 @@
 package pl.net.crimsonvideo.thirst;
 
 import org.apiguardian.api.API;
+import pl.net.crimsonvideo.thirst.executors.HydrationCommandExecutor;
 import pl.net.crimsonvideo.thirst.listeners.HydrationChangeListener;
 import relocate.bstats.bukkit.Metrics;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -89,6 +90,7 @@ public final class Thirst extends JavaPlugin {
         }.runTaskTimerAsynchronously(this,1,getConfig().getLong("autosavetime",60L)*1200L);
         getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
         getServer().getPluginManager().registerEvents(new HydrationChangeListener(this),this);
+        this.getCommand("hydration").setExecutor(new HydrationCommandExecutor(this));
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
     }
