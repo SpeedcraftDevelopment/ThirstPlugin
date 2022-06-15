@@ -1,5 +1,6 @@
 package pl.net.crimsonvideo.thirst.executors;
 
+import org.apiguardian.api.API;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -19,6 +20,7 @@ import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 
 import java.util.logging.Level;
 
+@API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
 public class HydrationCommandExecutor implements CommandExecutor {
     private JavaPlugin plugin;
 
