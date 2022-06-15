@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -56,6 +57,11 @@ public class DrinkListener implements Listener {
             public void run() {
                 Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,hydrationLoss);
             }
-        }.runTaskTimer(this.plugin,0L,this.plugin.getConfig().getLong("period",10L)));
+        }.runTaskTimerAsynchronously(this.plugin,0L,this.plugin.getConfig().getLong("period",10L)));
      }
+
+    @EventHandler
+    public void onPlayerLeave(@NotNull PlayerQuitEvent event) {
+
+    }
 }
