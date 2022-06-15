@@ -1,18 +1,12 @@
 package pl.net.crimsonvideo.thirst;
 
 import org.apiguardian.api.API;
+import pl.net.crimsonvideo.thirst.listeners.HydrationChangeListener;
 import relocate.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -21,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import pl.net.crimsonvideo.thirst.api.IHydrationAPI;
 import pl.net.crimsonvideo.thirst.data.ThirstData;
-import pl.net.crimsonvideo.thirst.events.HydrationChangedEvent;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 import pl.net.crimsonvideo.thirst.listeners.DrinkListener;
@@ -37,7 +30,7 @@ import java.util.*;
  * @author CrimsonVideo
  */
 @API(status = API.Status.INTERNAL,since="0.1-SNAPSHOT")
-public final class Thirst extends JavaPlugin implements Listener {
+public final class Thirst extends JavaPlugin {
 
     private File file;
     private File thirstDataFile;
@@ -95,7 +88,7 @@ public final class Thirst extends JavaPlugin implements Listener {
             }
         }.runTaskTimerAsynchronously(this,1,getConfig().getLong("autosavetime",60L)*1200L);
         getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
-        Bukkit.getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new HydrationChangeListener(this),this);
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
     }
@@ -180,14 +173,6 @@ public final class Thirst extends JavaPlugin implements Listener {
             saveDefaultConfig();
         }
         scanConfig();
-    }
-
-    @EventHandler
-    public void onHydrationChanged(@NotNull HydrationChangedEvent event){
-        if (event.isCancelled())
-            return;
-        this.getLogger().info(String.format("%s's hydration changed by %.5f", event.getPlayer().getName(),event.getChange()));
-
     }
 
     static class HydrationAPI implements IHydrationAPI {
