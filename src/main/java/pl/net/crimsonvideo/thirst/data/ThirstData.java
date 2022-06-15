@@ -1,5 +1,6 @@
 package pl.net.crimsonvideo.thirst.data;
 
+import org.apiguardian.api.API;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -51,6 +52,7 @@ public class ThirstData implements Serializable {
             this.hydrationMap.put(p.getUniqueId(),hydrationChangedEvent.getChange());
     }
 
+    @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     public void setPlayerHydration(@NotNull UUID p, float hydration) {
         HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(this.plugin.getServer().getPlayer(p),hydration,true);
         Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
@@ -72,6 +74,7 @@ public class ThirstData implements Serializable {
             throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
     }
 
+    @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     public float getPlayerHydration(@NotNull UUID p) throws IndexOutOfBoundsException {
         if (this.hydrationMap.containsKey(p))
             return this.hydrationMap.get(p);
@@ -107,6 +110,7 @@ public class ThirstData implements Serializable {
         }
     }
 
+    @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     public void addHydration(@NotNull UUID p, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
         if (hydration > 20)
             throw new ValueTooHighError("Hydration greater than 20");
@@ -151,6 +155,7 @@ public class ThirstData implements Serializable {
         }
     }
 
+    @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     public void subtractHydration(@NotNull UUID p, float hydration) throws IndexOutOfBoundsException, ValueTooLowError, ValueTooHighError {
         if (hydration > 20)
             throw new ValueTooHighError("Hydration above 20");

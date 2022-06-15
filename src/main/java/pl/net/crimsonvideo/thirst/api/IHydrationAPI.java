@@ -1,5 +1,6 @@
 package pl.net.crimsonvideo.thirst.api;
 
+import org.apiguardian.api.API;
 import org.bukkit.entity.Player;
 import pl.net.crimsonvideo.thirst.Thirst;
 import pl.net.crimsonvideo.thirst.ThirstAPI;
@@ -10,6 +11,7 @@ import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
+@API(status= API.Status.STABLE,since="0.1-SNAPSHOT")
 public interface IHydrationAPI {
     static Thirst getPlugin() {
         try {
@@ -27,6 +29,8 @@ public interface IHydrationAPI {
      * @see ThirstData#getPlayerHydration(Player)
      */
     float getHydration(Player player);
+
+    @API(status= API.Status.STABLE,since="0.2-SNAPSHOT")
     float getHydration(UUID player);
     /***
      * Sets hydration for player.
@@ -35,6 +39,8 @@ public interface IHydrationAPI {
      * @see ThirstData#setPlayerHydration(Player, float)
      */
     void setHydration(Player player, float hydration);
+
+    @API(status= API.Status.STABLE,since="0.2-SNAPSHOT")
     void setHydration(UUID player, float hydration);
     /***
      * Increases hydration of player.
@@ -45,6 +51,8 @@ public interface IHydrationAPI {
      * @see ThirstData#addHydration(Player, float)
      */
     void addHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError;
+
+    @API(status= API.Status.STABLE,since="0.2-SNAPSHOT")
     void addHydration(UUID player, float hydration) throws ValueTooHighError, ValueTooLowError;
     /***
      * Subtracts hydration from player.
@@ -55,5 +63,7 @@ public interface IHydrationAPI {
      * @see ThirstData#subtractHydration(Player, float)
      */
     void subtractHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError;
+
+    @API(status= API.Status.STABLE,since="0.2-SNAPSHOT")
     void subtractHydration(UUID player, float hydration) throws ValueTooHighError, ValueTooLowError;
 }

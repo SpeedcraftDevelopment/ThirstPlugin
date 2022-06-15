@@ -1,5 +1,6 @@
 package pl.net.crimsonvideo.thirst.listeners;
 
+import org.apiguardian.api.API;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import pl.net.crimsonvideo.thirst.Thirst;
 import pl.net.crimsonvideo.thirst.events.HydrationChangedEvent;
 
+@API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
 public class HydrationChangeListener implements Listener {
 
     private final JavaPlugin plugin;

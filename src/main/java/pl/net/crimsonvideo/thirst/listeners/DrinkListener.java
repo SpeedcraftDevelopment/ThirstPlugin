@@ -1,5 +1,6 @@
 package pl.net.crimsonvideo.thirst.listeners;
 
+import org.apiguardian.api.API;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,6 +47,7 @@ public class DrinkListener implements Listener {
 //                event.getPlayer().damage(1);
 //        }
 
+    @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     @EventHandler
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         final UUID playerUUID = event.getPlayer().getUniqueId();
