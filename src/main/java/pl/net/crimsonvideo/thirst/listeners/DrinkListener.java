@@ -56,6 +56,6 @@ public class DrinkListener implements Listener {
             public void run() {
                 Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,hydrationLoss);
             }
-        }.runTaskTimerAsynchronously(this.plugin,0L,this.plugin.getConfig().getLong("period",10L)));
+        }.runTaskTimer(this.plugin,0L,this.plugin.getConfig().getLong("period",10L)));
      }
 }
