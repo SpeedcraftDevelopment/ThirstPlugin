@@ -55,13 +55,15 @@ public class DrinkListener implements Listener {
         this.playerTasks.put(playerUUID, new BukkitRunnable() {
             @Override
             public void run() {
-                Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,hydrationLoss);
+                if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) > 0)
+                    Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,hydrationLoss);
             }
-        }.runTaskTimerAsynchronously(this.plugin,0L,this.plugin.getConfig().getLong("period",10L)));
+        }.runTaskTimerAsynchronously(this.plugin,0L,this.plugin.getConfig().getLong("period",100L)));
      }
 
+    @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     @EventHandler
     public void onPlayerLeave(@NotNull PlayerQuitEvent event) {
-
+        this.playerTasks.remove(event.getPlayer().getUniqueId());
     }
 }
