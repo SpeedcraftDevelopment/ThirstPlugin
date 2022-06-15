@@ -188,7 +188,22 @@ public final class Thirst extends JavaPlugin {
         }
 
         @Override
+        public float getHydration(UUID player) {
+            try {
+                return this.getThirstData().getPlayerHydration(player);
+            } catch (IndexOutOfBoundsException e){
+                this.getThirstData().setPlayerHydration(player,20f);
+                return 20f;
+            }
+        }
+
+        @Override
         public void setHydration(Player player, float hydration) {
+            this.getThirstData().setPlayerHydration(player, hydration);
+        }
+
+        @Override
+        public void setHydration(UUID player, float hydration) {
             this.getThirstData().setPlayerHydration(player, hydration);
         }
 
@@ -202,7 +217,25 @@ public final class Thirst extends JavaPlugin {
         }
 
         @Override
+        public void addHydration(UUID player, float hydration) throws ValueTooHighError, ValueTooLowError {
+            try {
+                this.getThirstData().addHydration(player, hydration);
+            } catch (IndexOutOfBoundsException e){
+                this.getThirstData().setPlayerHydration(player,20f);
+            }
+        }
+
+        @Override
         public void subtractHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError {
+            try {
+                this.getThirstData().subtractHydration(player, hydration);
+            } catch (IndexOutOfBoundsException e) {
+                this.getThirstData().setPlayerHydration(player,20f-hydration);
+            }
+        }
+
+        @Override
+        public void subtractHydration(UUID player, float hydration) throws ValueTooHighError, ValueTooLowError {
             try {
                 this.getThirstData().subtractHydration(player, hydration);
             } catch (IndexOutOfBoundsException e) {

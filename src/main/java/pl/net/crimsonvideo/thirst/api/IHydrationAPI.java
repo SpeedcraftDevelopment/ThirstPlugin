@@ -8,6 +8,7 @@ import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 public interface IHydrationAPI {
     static Thirst getPlugin() {
@@ -26,6 +27,7 @@ public interface IHydrationAPI {
      * @see ThirstData#getPlayerHydration(Player)
      */
     float getHydration(Player player);
+    float getHydration(UUID player);
     /***
      * Sets hydration for player.
      * @param player The player whose hydration will be set.
@@ -33,6 +35,7 @@ public interface IHydrationAPI {
      * @see ThirstData#setPlayerHydration(Player, float)
      */
     void setHydration(Player player, float hydration);
+    void setHydration(UUID player, float hydration);
     /***
      * Increases hydration of player.
      * @param player The player whose hydration will be increased.
@@ -42,6 +45,7 @@ public interface IHydrationAPI {
      * @see ThirstData#addHydration(Player, float)
      */
     void addHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError;
+    void addHydration(UUID player, float hydration) throws ValueTooHighError, ValueTooLowError;
     /***
      * Subtracts hydration from player.
      * @param player The player whose hydration will be subtracted.
@@ -51,4 +55,5 @@ public interface IHydrationAPI {
      * @see ThirstData#subtractHydration(Player, float)
      */
     void subtractHydration(Player player, float hydration) throws ValueTooHighError, ValueTooLowError;
+    void subtractHydration(UUID player, float hydration) throws ValueTooHighError, ValueTooLowError;
 }

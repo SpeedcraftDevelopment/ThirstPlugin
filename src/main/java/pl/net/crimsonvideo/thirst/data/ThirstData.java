@@ -51,6 +51,13 @@ public class ThirstData implements Serializable {
             this.hydrationMap.put(p.getUniqueId(),hydrationChangedEvent.getChange());
     }
 
+    public void setPlayerHydration(@NotNull UUID p, float hydration) {
+        HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(this.plugin.getServer().getPlayer(p),hydration,true);
+        Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
+        if (!hydrationChangedEvent.isCancelled())
+            this.hydrationMap.put(p,hydrationChangedEvent.getChange());
+    }
+
     /***
      * Gets hydration from player.
      * @param p The player whose hydration will be read.
@@ -63,6 +70,13 @@ public class ThirstData implements Serializable {
             return this.hydrationMap.get(p.getUniqueId());
         else
             throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
+    }
+
+    public float getPlayerHydration(@NotNull UUID p) throws IndexOutOfBoundsException {
+        if (this.hydrationMap.containsKey(p))
+            return this.hydrationMap.get(p);
+        else
+            throw new IndexOutOfBoundsException(p.toString() + " is not in the data file.");
     }
 
     /***
@@ -93,6 +107,25 @@ public class ThirstData implements Serializable {
         }
     }
 
+    public void addHydration(@NotNull UUID p, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
+        if (hydration > 20)
+            throw new ValueTooHighError("Hydration greater than 20");
+        else if (hydration < 0)
+            throw new ValueTooLowError("Hydration below 0");
+        else
+        {
+            HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(this.plugin.getServer().getPlayer(p),hydration);
+            Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
+            if (!hydrationChangedEvent.isCancelled())
+            {
+                if (this.hydrationMap.containsKey(p))
+                    this.hydrationMap.compute(p,(k,v) -> Math.min(v + hydrationChangedEvent.getChange(), 20f));
+                else
+                    throw new IndexOutOfBoundsException(p.toString() + " is not in the data file.");
+            }
+        }
+    }
+
     /***
      * Subtracts hydration from player.
      * @param p The player whose hydration will be subtracted.
@@ -115,6 +148,22 @@ public class ThirstData implements Serializable {
                     this.hydrationMap.compute(p.getUniqueId(),(k,v) -> Math.max(0f,v+hydrationChangedEvent.getChange()));
                 else
                     throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
+        }
+    }
+
+    public void subtractHydration(@NotNull UUID p, float hydration) throws IndexOutOfBoundsException, ValueTooLowError, ValueTooHighError {
+        if (hydration > 20)
+            throw new ValueTooHighError("Hydration above 20");
+        else if (hydration < 0)
+            throw new ValueTooLowError("Hydration below 0");
+        else {
+            HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(this.plugin.getServer().getPlayer(p),-hydration);
+            Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
+            if (!hydrationChangedEvent.isCancelled())
+                if (this.hydrationMap.containsKey(p))
+                    this.hydrationMap.compute(p,(k,v) -> Math.max(0f,v+hydrationChangedEvent.getChange()));
+                else
+                    throw new IndexOutOfBoundsException(p.toString() + " is not in the data file.");
         }
     }
 
