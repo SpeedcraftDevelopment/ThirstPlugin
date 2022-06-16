@@ -20,12 +20,14 @@ public class DrinkListener implements Listener {
     private final JavaPlugin plugin;
     private final Random random;
     private final Map<UUID, BukkitTask> playerTasks;
+    private final Map<UUID,BukkitTask> damageTasks;
     private final float hydrationLoss;
 
     public DrinkListener(@NotNull JavaPlugin plugin){
         this.plugin = plugin;
         this.random = new Random(plugin.getConfig().getInt("seed",plugin.getServer().hashCode()));
         this.playerTasks = Collections.synchronizedMap(new HashMap<>());
+        this.damageTasks = new HashMap<>();
         this.hydrationLoss = (float) this.plugin.getConfig().getDouble("loss",0.125f);
     }
 
@@ -58,10 +60,10 @@ public class DrinkListener implements Listener {
                 @Override
                 public void run() {
                     if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) > 0)
-                    {    if (random.nextInt(100) <= 5)
-                        Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,calculateTemperatureLoss(hydrationLoss));}
-                    else
-                        event.getPlayer().damage(damage);
+                        if (random.nextInt(100) <= 5)
+                            Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,calculateTemperatureLoss(hydrationLoss));
+                    else if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) < 0)
+                        Thirst.getAPI().hydrationAPI.setHydration(playerUUID,0);
                 }
 
                 private float calculateTemperatureLoss(float hydrationLoss) {
@@ -72,6 +74,13 @@ public class DrinkListener implements Listener {
                         return hydrationLoss * temperature;
                 }
             }.runTaskTimerAsynchronously(this.plugin,0L,10L));
+        this.damageTasks.put(playerUUID,new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) == 0)
+                    event.getPlayer().damage(damage);
+            }
+        }.runTaskTimer(this.plugin,0L,9L));
      }
 
     @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
