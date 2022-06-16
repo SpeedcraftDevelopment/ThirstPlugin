@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import pl.net.crimsonvideo.thirst.Localisation;
 import pl.net.crimsonvideo.thirst.Thirst;
 import pl.net.crimsonvideo.thirst.events.HydrationChangedEvent;
 
@@ -24,6 +25,6 @@ public class HydrationChangeListener implements Listener {
             return;
         if (plugin.getConfig().getBoolean("log",false))
             plugin.getLogger().info(String.format("%s's hydration changed by %.5f", event.getPlayer().getName(),event.getChange()));
-        event.getPlayer().sendActionBar(ChatColor.DARK_BLUE + new String(new char[((int) Math.floor(Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer())))]).replace('\0', '|') + ChatColor.BLACK + new String(new char[(20-((int) Math.floor(Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer()))))]).replace('\0','|') + ChatColor.WHITE + " - Hydration Level");
+        event.getPlayer().sendActionBar(ChatColor.DARK_BLUE + new String(new char[((int) Math.floor(Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer())))]).replace('\0', '|') + ChatColor.BLACK + new String(new char[(20-((int) Math.floor(Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer()))))]).replace('\0','|') + ChatColor.WHITE + " - " + Localisation.getLocalisationForPlayer(event.getPlayer()).getLocalisedString("thirst.actionbar.hydration"));
     }
 }

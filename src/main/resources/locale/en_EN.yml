@@ -1,0 +1,4 @@
+thirst:
+  actionbar:
+    dehydrate: "You are dehydrated!"
+    hydration: "Hydration Level"
