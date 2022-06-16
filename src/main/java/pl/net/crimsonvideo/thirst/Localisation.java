@@ -8,22 +8,21 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public enum Localisation {
     POLSKI("pl_PL"),
     ENGLISH("en_EN");
 
-    private File file;
     private FileConfiguration config;
 
     Localisation(String name) {
-        this.file = new File(Objects.requireNonNull(getClass().getResource(String.format("/locale/%s.yml", name))).getFile());
-        this.config = new YamlConfiguration();
-        try {
-            this.config.load(this.file);
+        try(InputStream file = getClass().getResourceAsStream(String.format("/locale/%s.yml", name))) {
+            this.config = new YamlConfiguration();
+            assert file != null;
+            this.config.load(new InputStreamReader(file));
         } catch (IOException | InvalidConfigurationException e) {
             throw new RuntimeException(e);
         }
