@@ -53,24 +53,25 @@ public class DrinkListener implements Listener {
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         final UUID playerUUID = event.getPlayer().getUniqueId();
         final double damage = this.plugin.getConfig().getDouble("damage",0.5);
-        this.playerTasks.put(playerUUID, new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) > 0)
-                {    if (random.nextInt(100) <= 5)
+        if (event.getPlayer().hasPermission("thirst.hydration"))
+            this.playerTasks.put(playerUUID, new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) > 0)
+                    {    if (random.nextInt(100) <= 5)
                         Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,calculateTemperatureLoss(hydrationLoss));}
-                else
-                    event.getPlayer().damage(damage);
-            }
+                    else
+                        event.getPlayer().damage(damage);
+                }
 
-            private float calculateTemperatureLoss(float hydrationLoss) {
-                float temperature = (float) event.getPlayer().getLocation().getBlock().getTemperature();
-                if (temperature > 0.15f)
-                    return hydrationLoss * (1 + temperature);
-                else
-                    return hydrationLoss * temperature;
-            }
-        }.runTaskTimerAsynchronously(this.plugin,0L,10L));
+                private float calculateTemperatureLoss(float hydrationLoss) {
+                    float temperature = (float) event.getPlayer().getLocation().getBlock().getTemperature();
+                    if (temperature > 0.15f)
+                        return hydrationLoss * (1 + temperature);
+                    else
+                        return hydrationLoss * temperature;
+                }
+            }.runTaskTimerAsynchronously(this.plugin,0L,10L));
      }
 
     @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
