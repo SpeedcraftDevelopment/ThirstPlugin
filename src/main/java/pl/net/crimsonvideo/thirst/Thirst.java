@@ -2,6 +2,7 @@ package pl.net.crimsonvideo.thirst;
 
 import org.apiguardian.api.API;
 import pl.net.crimsonvideo.thirst.executors.HydrationCommandExecutor;
+import pl.net.crimsonvideo.thirst.listeners.DamageListener;
 import pl.net.crimsonvideo.thirst.listeners.HydrationChangeListener;
 import pl.net.crimsonvideo.thirst.listeners.RespawnListener;
 import relocate.bstats.bukkit.Metrics;
@@ -92,6 +93,7 @@ public final class Thirst extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
         getServer().getPluginManager().registerEvents(new HydrationChangeListener(this),this);
         getServer().getPluginManager().registerEvents(new RespawnListener(this),this);
+        getServer().getPluginManager().registerEvents(new DamageListener(),this);
         this.getCommand("hydration").setExecutor(new HydrationCommandExecutor(this));
         int pluginId = 15371;
         Metrics metrics = new Metrics(this,pluginId);
