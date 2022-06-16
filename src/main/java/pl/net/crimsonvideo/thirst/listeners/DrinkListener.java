@@ -34,7 +34,13 @@ public class DrinkListener implements Listener {
     @EventHandler
     public void onDrink(@NotNull PlayerItemConsumeEvent event) {
         if (event.getItem().getType().equals(Material.POTION)) {
-            Thirst.getAPI().hydrationAPI.addHydration(event.getPlayer(), (float) plugin.getConfig().getDouble(String.format("thirst.%s", Objects.requireNonNull(((PotionMeta) event.getItem().getItemMeta()).getBasePotionData().getType().toString())),1f));
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    Thirst.getAPI().hydrationAPI.addHydration(event.getPlayer(), (float) plugin.getConfig().getDouble(String.format("thirst.%s", Objects.requireNonNull(((PotionMeta) event.getItem().getItemMeta()).getBasePotionData().getType().toString())),1f));
+                }
+            }.runTaskAsynchronously(this.plugin);
         }
     }
 
