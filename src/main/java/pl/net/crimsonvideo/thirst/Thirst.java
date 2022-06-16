@@ -108,6 +108,9 @@ public final class Thirst extends JavaPlugin {
     @Override
     public void saveDefaultConfig() {
         this.config.set("seed",this.getServer().hashCode());
+        this.config.set("loss",0.125f);
+        this.config.set("damage",0.5d);
+        this.config.set("log",false);
         this.config.set("autosavetime",60L);
         for (PotionType type : PotionType.values())
             this.config.set(String.format("thirst.%s",type.name()),1f);

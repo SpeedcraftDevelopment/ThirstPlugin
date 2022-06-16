@@ -22,7 +22,8 @@ public class HydrationChangeListener implements Listener {
     public void onHydrationChanged(@NotNull HydrationChangedEvent event){
         if (event.isCancelled())
             return;
-        plugin.getLogger().info(String.format("%s's hydration changed by %.5f", event.getPlayer().getName(),event.getChange()));
+        if (plugin.getConfig().getBoolean("log",false))
+            plugin.getLogger().info(String.format("%s's hydration changed by %.5f", event.getPlayer().getName(),event.getChange()));
         event.getPlayer().sendActionBar(ChatColor.DARK_BLUE + new String(new char[((int) Math.floor(Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer())))]).replace('\0', '|') + ChatColor.BLACK + new String(new char[(20-((int) Math.floor(Thirst.getAPI().hydrationAPI.getHydration(event.getPlayer()))))]).replace('\0','|') + ChatColor.WHITE + " - Hydration Level");
     }
 }
