@@ -66,7 +66,7 @@ public class DrinkListener implements Listener {
                 @Override
                 public void run() {
                     if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) > 0)
-                        if (calculateTemperatureLoss(random.nextInt(100)) > 95)
+                        if (random.nextInt(100) > 95)
                             Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,calculateTemperatureLoss(hydrationLoss));
                     else if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) < 0)
                         Thirst.getAPI().hydrationAPI.setHydration(playerUUID,0);
