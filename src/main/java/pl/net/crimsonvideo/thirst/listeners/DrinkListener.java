@@ -18,13 +18,13 @@ import java.util.*;
 
 public class DrinkListener implements Listener {
     private final JavaPlugin plugin;
-//    private final Random random;
+    private final Random random;
     private final Map<UUID, BukkitTask> playerTasks;
     private final float hydrationLoss;
 
     public DrinkListener(@NotNull JavaPlugin plugin){
         this.plugin = plugin;
-//        this.random = new Random(plugin.getConfig().getInt("seed",plugin.getServer().hashCode()));
+        this.random = new Random(plugin.getConfig().getInt("seed",plugin.getServer().hashCode()));
         this.playerTasks = Collections.synchronizedMap(new HashMap<>());
         this.hydrationLoss = (float) this.plugin.getConfig().getDouble("loss",0.125f);
     }
@@ -52,18 +52,31 @@ public class DrinkListener implements Listener {
     @EventHandler
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
         final UUID playerUUID = event.getPlayer().getUniqueId();
+        final double damage = this.plugin.getConfig().getDouble("damage",0.5);
         this.playerTasks.put(playerUUID, new BukkitRunnable() {
             @Override
             public void run() {
                 if (Thirst.getAPI().hydrationAPI.getHydration(playerUUID) > 0)
-                    Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,hydrationLoss);
+                {    if (random.nextInt(100) <= 5)
+                        Thirst.getAPI().hydrationAPI.subtractHydration(playerUUID,calculateTemperatureLoss(hydrationLoss));}
+                else
+                    event.getPlayer().damage(damage);
             }
-        }.runTaskTimerAsynchronously(this.plugin,0L,this.plugin.getConfig().getLong("period",100L)));
+
+            private float calculateTemperatureLoss(float hydrationLoss) {
+                float temperature = (float) event.getPlayer().getLocation().getBlock().getTemperature();
+                if (temperature > 0.15f)
+                    return hydrationLoss * (1 + temperature);
+                else
+                    return hydrationLoss * temperature;
+            }
+        }.runTaskTimerAsynchronously(this.plugin,0L,10L));
      }
 
     @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     @EventHandler
     public void onPlayerLeave(@NotNull PlayerQuitEvent event) {
+        this.playerTasks.get(event.getPlayer().getUniqueId()).cancel();
         this.playerTasks.remove(event.getPlayer().getUniqueId());
     }
 }
