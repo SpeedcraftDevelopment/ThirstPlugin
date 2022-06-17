@@ -15,7 +15,7 @@ public class DamageListener implements Listener {
     public void onPlayerDamage(@NotNull EntityDamageEvent event) {
         if (event.getEntity() instanceof Player){
            if (Thirst.getAPI().hydrationAPI.getHydration((Player)event.getEntity()) == 0)
-               ActionBarAPI.sendActionBar((Player)event.getEntity(),ChatColor.RED + Localisation.getLocalisationForPlayer((Player) event.getEntity()).getLocalisedString("thirst.actionbar.dehydrate"),2);
+               ActionBarAPI.sendActionBar((Player)event.getEntity(),ChatColor.RED + Localisation.getLocalisationForPlayer((Player) event.getEntity()).getLocalisedString("thirst.actionbar.dehydrate"));
         }
     }
 }
