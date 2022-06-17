@@ -1,5 +1,6 @@
 package pl.net.crimsonvideo.thirst.data;
 
+import org.apiguardian.api.API;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import pl.net.crimsonvideo.thirst.exceptions.ValueTooHighError;
@@ -7,6 +8,7 @@ import pl.net.crimsonvideo.thirst.exceptions.ValueTooLowError;
 
 import java.util.UUID;
 
+@API(status = API.Status.INTERNAL,since = "0.3-SNAPSHOT")
 public interface IThirstData {
     void setPlayerHydration(@NotNull Player p, float hydration);
     void setPlayerHydration(@NotNull UUID p, float hydration);
