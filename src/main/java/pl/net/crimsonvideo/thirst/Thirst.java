@@ -2,10 +2,12 @@ package pl.net.crimsonvideo.thirst;
 
 import org.apiguardian.api.API;
 import pl.net.crimsonvideo.thirst.data.IThirstData;
+import pl.net.crimsonvideo.thirst.data.RedisThirst;
 import pl.net.crimsonvideo.thirst.executors.HydrationCommandExecutor;
 import pl.net.crimsonvideo.thirst.listeners.DamageListener;
 import pl.net.crimsonvideo.thirst.listeners.HydrationChangeListener;
 import pl.net.crimsonvideo.thirst.listeners.RespawnListener;
+import redis.clients.jedis.JedisPool;
 import relocate.bstats.bukkit.Metrics;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -42,6 +44,7 @@ public final class Thirst extends JavaPlugin {
     IThirstData thirstData;
     private static ThirstAPI api;
     private boolean redis;
+    private JedisPool pool;
 
     public Thirst()
     {
@@ -76,6 +79,9 @@ public final class Thirst extends JavaPlugin {
             } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
+        }else {
+            this.pool = new JedisPool(this.config.getString("redis.host"),this.config.getInt("redis.port"));
+            this.thirstData = new RedisThirst(this,pool);
         }
         api = new ThirstAPI(this);
     }
