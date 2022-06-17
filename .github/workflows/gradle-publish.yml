@@ -10,6 +10,12 @@ name: Gradle Package
 on:
   release:
     types: [created]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to run tests on."
+        type: environment
+        required: true 
 
 jobs:
   build:
