@@ -52,7 +52,16 @@ jobs:
         # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
 
-        
+    - name: Create library directory
+      run: |
+        mkdir lib
+        cd lib
+    
+    - name: Fetch Actionbar library
+      uses: enflo/curl-action@v1.2
+      with:
+        curl: -O https://github.com/Bobcat00/ActionBarAPI/releases/download/1.5.4a/ActionBarAPI-1.5.4a.jar
+    
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
