@@ -1,6 +1,7 @@
 package pl.net.crimsonvideo.thirst;
 
 import org.apiguardian.api.API;
+import pl.net.crimsonvideo.thirst.data.IThirstData;
 import pl.net.crimsonvideo.thirst.executors.HydrationCommandExecutor;
 import pl.net.crimsonvideo.thirst.listeners.DamageListener;
 import pl.net.crimsonvideo.thirst.listeners.HydrationChangeListener;
@@ -38,8 +39,9 @@ public final class Thirst extends JavaPlugin {
     private File file;
     private File thirstDataFile;
     private FileConfiguration config;
-    ThirstData thirstData;
+    IThirstData thirstData;
     private static ThirstAPI api;
+    private boolean redis;
 
     public Thirst()
     {
@@ -53,21 +55,27 @@ public final class Thirst extends JavaPlugin {
 
     @Override
     public void onLoad(){
-        this.thirstDataFile = new File(getDataFolder() + "/hydration.dat");
-        try {
-            this.thirstData = ThirstData.loadData(thirstDataFile.getPath());
-            Field plugin = ThirstData.class.getDeclaredField("plugin");
-            plugin.setAccessible(true);
-            plugin.set(this.thirstData,this);
-        } catch (IOException e) {
-            if (!thirstDataFile.exists())
-            {
-                this.thirstData = new ThirstData(this);
-                if (!this.thirstData.saveData(thirstDataFile.getPath()))
-                    throw new RuntimeException("Can't create data file.");
+        file = new File(getDataFolder(), "config.yml");
+        config = new YamlConfiguration();
+        reloadConfig();
+        this.redis = this.config.contains("redis");
+        if (!redis){
+            this.thirstDataFile = new File(getDataFolder() + "/hydration.dat");
+            try {
+                this.thirstData = ThirstData.loadData(thirstDataFile.getPath());
+                Field plugin = ThirstData.class.getDeclaredField("plugin");
+                plugin.setAccessible(true);
+                plugin.set(this.thirstData,this);
+            } catch (IOException e) {
+                if (!thirstDataFile.exists())
+                {
+                    this.thirstData = new ThirstData(this);
+                    if (!((ThirstData)this.thirstData).saveData(thirstDataFile.getPath()))
+                        throw new RuntimeException("Can't create data file.");
+                }
+            } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
         api = new ThirstAPI(this);
     }
@@ -80,16 +88,16 @@ public final class Thirst extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        file = new File(getDataFolder(), "config.yml");
-        config = new YamlConfiguration();
-        reloadConfig();
-        new BukkitRunnable() {
+        if (!redis)
+        {
+            new BukkitRunnable() {
 
-            @Override
-            public void run() {
-                thirstData.saveData(thirstDataFile.getPath());
-            }
-        }.runTaskTimerAsynchronously(this,1,getConfig().getLong("autosavetime",60L)*1200L);
+                @Override
+                public void run() {
+                    ((ThirstData)thirstData).saveData(thirstDataFile.getPath());
+                }
+            }.runTaskTimerAsynchronously(this,1,getConfig().getLong("autosavetime",60L)*1200L);
+        }
         getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
         getServer().getPluginManager().registerEvents(new HydrationChangeListener(this),this);
         getServer().getPluginManager().registerEvents(new RespawnListener(this),this);
@@ -101,7 +109,7 @@ public final class Thirst extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.thirstData.saveData(this.thirstDataFile.getPath());
+        if (!redis) ((ThirstData)this.thirstData).saveData(this.thirstDataFile.getPath());
     }
 
     @Override
@@ -252,7 +260,7 @@ public final class Thirst extends JavaPlugin {
             }
         }
 
-        private ThirstData getThirstData() {
+        private IThirstData getThirstData() {
             return IHydrationAPI.getPlugin().thirstData;
         }
     }
