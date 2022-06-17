@@ -22,11 +22,11 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class ThirstData implements Serializable {
+public class ThirstData implements IThirstData,Serializable {
+    @Serial
     private transient static final long serialVersionUID = 7410964373687906258L;
 
-    @SuppressWarnings("unused")
-    private transient JavaPlugin plugin;
+    private final transient JavaPlugin plugin;
 
     private final Map<UUID,Float> hydrationMap;
 
@@ -45,6 +45,7 @@ public class ThirstData implements Serializable {
      * @param hydration The hydration to set.
      * @see IHydrationAPI#setHydration(Player, float)
      */
+    @Override
     public void setPlayerHydration(@NotNull Player p, float hydration) {
         HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(p,hydration,true);
         Bukkit.getPluginManager().callEvent(hydrationChangedEvent);
@@ -52,6 +53,7 @@ public class ThirstData implements Serializable {
             this.hydrationMap.put(p.getUniqueId(),hydrationChangedEvent.getChange());
     }
 
+    @Override
     @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     public void setPlayerHydration(@NotNull UUID p, float hydration) {
         HydrationChangedEvent hydrationChangedEvent = new HydrationChangedEvent(this.plugin.getServer().getPlayer(p),hydration,true);
@@ -67,6 +69,7 @@ public class ThirstData implements Serializable {
      * @throws IndexOutOfBoundsException The given Player is not in the database.
      * @see IHydrationAPI#getHydration(Player)
      */
+    @Override
     public float getPlayerHydration(@NotNull Player p) throws IndexOutOfBoundsException {
         if (this.hydrationMap.containsKey(p.getUniqueId()))
             return this.hydrationMap.get(p.getUniqueId());
@@ -74,6 +77,7 @@ public class ThirstData implements Serializable {
             throw new IndexOutOfBoundsException(p.getUniqueId().toString() + " is not in the data file.");
     }
 
+    @Override
     @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     public float getPlayerHydration(@NotNull UUID p) throws IndexOutOfBoundsException {
         if (this.hydrationMap.containsKey(p))
@@ -91,6 +95,7 @@ public class ThirstData implements Serializable {
      * @throws ValueTooLowError Hydration is below 0.
      * @see IHydrationAPI#addHydration(Player, float) 
      */
+    @Override
     public void addHydration(@NotNull Player p, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
         if (hydration > 20)
             throw new ValueTooHighError("Hydration greater than 20");
@@ -110,6 +115,7 @@ public class ThirstData implements Serializable {
         }
     }
 
+    @Override
     @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     public void addHydration(@NotNull UUID p, float hydration) throws IndexOutOfBoundsException, ValueTooHighError, ValueTooLowError {
         if (hydration > 20)
@@ -139,6 +145,7 @@ public class ThirstData implements Serializable {
      * @throws ValueTooLowError Hydration is lower than 0.
      * @see IHydrationAPI#subtractHydration(Player, float) 
      */
+    @Override
     public void subtractHydration(@NotNull Player p, float hydration) throws IndexOutOfBoundsException, ValueTooLowError, ValueTooHighError {
         if (hydration > 20)
             throw new ValueTooHighError("Hydration above 20");
@@ -155,6 +162,7 @@ public class ThirstData implements Serializable {
         }
     }
 
+    @Override
     @API(status= API.Status.INTERNAL,since="0.2-SNAPSHOT")
     public void subtractHydration(@NotNull UUID p, float hydration) throws IndexOutOfBoundsException, ValueTooLowError, ValueTooHighError {
         if (hydration > 20)

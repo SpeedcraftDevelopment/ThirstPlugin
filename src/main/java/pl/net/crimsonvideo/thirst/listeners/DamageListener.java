@@ -1,5 +1,6 @@
 package pl.net.crimsonvideo.thirst.listeners;
 
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,7 @@ public class DamageListener implements Listener {
     public void onPlayerDamage(@NotNull EntityDamageEvent event) {
         if (event.getEntity() instanceof Player){
            if (Thirst.getAPI().hydrationAPI.getHydration((Player)event.getEntity()) == 0)
-               ((Player)event.getEntity()).sendActionBar(ChatColor.RED + Localisation.getLocalisationForPlayer((Player)event.getEntity()).getLocalisedString("thirst.actionbar.dehydrate"));
+               ActionBarAPI.sendActionBar((Player)event.getEntity(),ChatColor.RED + Localisation.getLocalisationForPlayer((Player) event.getEntity()).getLocalisedString("thirst.actionbar.dehydrate"));
         }
     }
 }

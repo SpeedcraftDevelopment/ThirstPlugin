@@ -2,12 +2,14 @@ package pl.net.crimsonvideo.thirst.exceptions;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
 public class ValueTooHighError extends Error {
+    @Serial
     private static final long serialVersionUID = -4801576966237163502L;
     private final String message;
     public ValueTooHighError(String message) {
@@ -47,7 +49,7 @@ public class ValueTooHighError extends Error {
         return getMessage().offsetByCodePoints(index, codePointOffset);
     }
 
-    public void getChars(int srcBegin, int srcEnd, @NotNull char[] dst, int dstBegin) {
+    public void getChars(int srcBegin, int srcEnd, char @NotNull [] dst, int dstBegin) {
         getMessage().getChars(srcBegin, srcEnd, dst, dstBegin);
     }
 
