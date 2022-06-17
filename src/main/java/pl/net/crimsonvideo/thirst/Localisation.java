@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.util.Locale;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,7 +34,7 @@ public enum Localisation {
 
     @Contract("_ -> !null")
     public static Localisation getLocalisationForPlayer(@NotNull Player p){
-        if (p.getLocale().equalsIgnoreCase("pol_PL") || p.getLocale().equalsIgnoreCase("pl_pl"))
+        if (p.locale().equals(Locale.forLanguageTag("pl")))
             return POLSKI;
         else
             return ENGLISH;
