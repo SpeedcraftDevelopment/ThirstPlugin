@@ -2,9 +2,11 @@ package pl.net.crimsonvideo.thirst.exceptions;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.stream.IntStream;
 
 public class ValueTooLowError extends Error{
+    @Serial
     private static final long serialVersionUID = 3578516434783311757L;
     private final String message;
 
