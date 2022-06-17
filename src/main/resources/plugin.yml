@@ -7,6 +7,7 @@ authors: [ CrimsonVideo ]
 description: Adds Thirst to Minecraft Servers.
 libraries:
   - "org.apiguardian:apiguardian-api:1.1.2"
+  - 'redis.clients:jedis:4.2.3'
 commands:
   hydration:
     usage: /hydration <optional admin parameters> <player's nickname>

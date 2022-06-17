@@ -19,7 +19,8 @@ repositories {
 
 dependencies {
     compileOnly files('lib/ActionBarAPI-1.5.4a.jar')
-    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.jetbrains:annotations:23.0.0'
+    implementation 'redis.clients:jedis:4.2.3'
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     compileOnly "org.apiguardian:apiguardian-api:1.1.2"
 }
