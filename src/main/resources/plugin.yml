@@ -5,6 +5,8 @@ prefix: Thirst
 load: STARTUP
 authors: [ CrimsonVideo ]
 description: Adds Thirst to Minecraft Servers.
+depend:
+  - ActionBarAPI
 libraries:
   - "org.apiguardian:apiguardian-api:1.1.2"
   - 'redis.clients:jedis:4.2.3'
