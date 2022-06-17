@@ -23,10 +23,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class ThirstData implements Serializable {
+    @Serial
     private transient static final long serialVersionUID = 7410964373687906258L;
 
-    @SuppressWarnings("unused")
-    private transient JavaPlugin plugin;
+    private final transient JavaPlugin plugin;
 
     private final Map<UUID,Float> hydrationMap;
 
