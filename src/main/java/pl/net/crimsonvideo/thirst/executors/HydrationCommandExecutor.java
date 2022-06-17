@@ -103,8 +103,7 @@ public class HydrationCommandExecutor implements CommandExecutor {
                     return true;
                 }
             } else {
-                if (sender instanceof Player) {
-                    final Player player = (Player) sender;
+                if (sender instanceof final Player player) {
                     final BossBar bar = Bukkit.createBossBar("Thirst", BarColor.BLUE, BarStyle.SEGMENTED_20);
                     bar.setProgress(Thirst.getAPI().hydrationAPI.getHydration(player) / 20f);
                     bar.addPlayer(player);
