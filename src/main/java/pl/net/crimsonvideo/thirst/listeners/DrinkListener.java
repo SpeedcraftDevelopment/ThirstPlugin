@@ -94,5 +94,7 @@ public class DrinkListener implements Listener {
     public void onPlayerLeave(@NotNull PlayerQuitEvent event) {
         this.playerTasks.get(event.getPlayer().getUniqueId()).cancel();
         this.playerTasks.remove(event.getPlayer().getUniqueId());
+        this.damageTasks.get(event.getPlayer().getUniqueId()).cancel();
+        this.damageTasks.remove(event.getPlayer().getUniqueId());
     }
 }
