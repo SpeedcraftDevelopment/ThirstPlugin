@@ -93,6 +93,11 @@ public final class Thirst extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new Updater(this,102503).getVersion((version) -> {
+            if (!this.getDescription().getVersion().equals(version)) {
+                getLogger().info("There is a new update available for Thirst.");
+            }
+        });
         // Plugin startup logic
         if (!redis)
         {
