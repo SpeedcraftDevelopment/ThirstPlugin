@@ -61,7 +61,7 @@ public record RedisThirst(JavaPlugin plugin, JedisPool pool) implements IThirstD
             if (plugin.getConfig().isString("redis.auth.username") && plugin.getConfig().isString("redis.auth.password"))
                 jedis.auth(plugin.getConfig().getString("redis.auth.username"), plugin.getConfig().getString("redis.auth.password"));
             if (jedis.exists(p.getUniqueId().toString()))
-                jedis.set(p.getUniqueId().toString(),Float.toString(Float.parseFloat(jedis.get(p.getUniqueId().toString()))+hydration));
+                jedis.set(p.getUniqueId().toString(),Float.toString((Float.parseFloat(jedis.get(p.getUniqueId().toString()))+hydration)>20?20:Float.parseFloat(jedis.get(p.getUniqueId().toString()))+hydration));
             else throw new IndexOutOfBoundsException("No player in database.");
         }
     }
@@ -74,7 +74,7 @@ public record RedisThirst(JavaPlugin plugin, JedisPool pool) implements IThirstD
             if (plugin.getConfig().isString("redis.auth.username") && plugin.getConfig().isString("redis.auth.password"))
                 jedis.auth(plugin.getConfig().getString("redis.auth.username"), plugin.getConfig().getString("redis.auth.password"));
             if (jedis.exists(p.toString()))
-                jedis.set(p.toString(),Float.toString(Float.parseFloat(jedis.get(p.toString()))+hydration));
+                jedis.set(p.toString(),Float.toString((Float.parseFloat(jedis.get(p.toString()))+hydration)>20?20:Float.parseFloat(jedis.get(p.toString()))+hydration));
             else throw new IndexOutOfBoundsException("No player in database.");
         }
     }
@@ -87,7 +87,7 @@ public record RedisThirst(JavaPlugin plugin, JedisPool pool) implements IThirstD
             if (plugin.getConfig().isString("redis.auth.username") && plugin.getConfig().isString("redis.auth.password"))
                 jedis.auth(plugin.getConfig().getString("redis.auth.username"), plugin.getConfig().getString("redis.auth.password"));
             if (jedis.exists(p.getUniqueId().toString()))
-                jedis.set(p.getUniqueId().toString(),Float.toString(Float.parseFloat(jedis.get(p.getUniqueId().toString()))-hydration));
+                jedis.set(p.getUniqueId().toString(),Float.toString((Float.parseFloat(jedis.get(p.getUniqueId().toString()))-hydration)<0?0:Float.parseFloat(jedis.get(p.getUniqueId().toString()))-hydration));
             else throw new IndexOutOfBoundsException("No player in database.");
         }
     }
@@ -100,7 +100,7 @@ public record RedisThirst(JavaPlugin plugin, JedisPool pool) implements IThirstD
             if (plugin.getConfig().isString("redis.auth.username") && plugin.getConfig().isString("redis.auth.password"))
                 jedis.auth(plugin.getConfig().getString("redis.auth.username"), plugin.getConfig().getString("redis.auth.password"));
             if (jedis.exists(p.toString()))
-                jedis.set(p.toString(),Float.toString(Float.parseFloat(jedis.get(p.toString()))-hydration));
+                jedis.set(p.toString(),Float.toString((Float.parseFloat(jedis.get(p.toString()))-hydration)<0?0:Float.parseFloat(jedis.get(p.toString()))-hydration));
             else throw new IndexOutOfBoundsException("No player in database.");
         }
     }
