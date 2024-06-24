@@ -4,6 +4,7 @@ import org.apiguardian.api.API;
 import pl.net.crimsonvideo.thirst.data.IThirstData;
 import pl.net.crimsonvideo.thirst.data.RedisThirst;
 import pl.net.crimsonvideo.thirst.executors.HydrationCommandExecutor;
+import pl.net.crimsonvideo.thirst.integration.ia.UpdateHudListener;
 import pl.net.crimsonvideo.thirst.listeners.DamageListener;
 import pl.net.crimsonvideo.thirst.listeners.HydrationChangeListener;
 import pl.net.crimsonvideo.thirst.listeners.RespawnListener;
@@ -110,7 +111,11 @@ public final class Thirst extends JavaPlugin {
             }.runTaskTimerAsynchronously(this,1,getConfig().getLong("autosavetime",60L)*1200L);
         }
         getServer().getPluginManager().registerEvents(new DrinkListener(this),this);
-        getServer().getPluginManager().registerEvents(new HydrationChangeListener(this),this);
+        if (this.getServer().getPluginManager().isPluginEnabled("ItemsAdder")) {
+            getServer().getPluginManager().registerEvents(new UpdateHudListener(this), this);
+        } else {
+            getServer().getPluginManager().registerEvents(new HydrationChangeListener(this),this);
+        }
         getServer().getPluginManager().registerEvents(new RespawnListener(this),this);
         getServer().getPluginManager().registerEvents(new DamageListener(),this);
         this.getCommand("hydration").setExecutor(new HydrationCommandExecutor(this));
@@ -137,6 +142,7 @@ public final class Thirst extends JavaPlugin {
         this.config.set("autosavetime",60L);
         for (PotionType type : PotionType.values())
             this.config.set(String.format("thirst.%s",type.name()),1f);
+        this.config.set("ia.hud", "itemsadder:thirst");
         this.saveConfig();
     }
 
